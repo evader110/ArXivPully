@@ -1,6 +1,4 @@
-# sample.py
 import falcon
-import json
 from urllib import request
 from bs4 import BeautifulSoup
 
