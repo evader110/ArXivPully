@@ -1,8 +1,9 @@
-import falcon
+from falcon import API
 from urllib import request
 from bs4 import BeautifulSoup
 
 class ArXivPully:
+    # Removes rogue newline characters from the title and abstract
     def cleanText(self,text):
         return ' '.join(text.split('\n'))
 
@@ -12,7 +13,10 @@ class ArXivPully:
         output = []
         soup = BeautifulSoup(data, 'html.parser')
         titles = soup.find_all('title')
+
+        # ArXiv populates the first title value as the search query
         titles.pop(0)
+
         bodies = soup.find_all('summary')
         links = soup.find_all('link', title='pdf')
         for i in range(len(titles)):
@@ -29,5 +33,5 @@ class ArXivPully:
             output.append(self.pullFromArXiv(item[0],item[1]))
         resp.media = output
 
-api = falcon.API()
-api.add_route('/api/', ArXivPully())
+api = API()
+api.add_route('/api/query', ArXivPully())
