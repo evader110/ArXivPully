@@ -1,12 +1,14 @@
 # ArXivPully
-An API that can return articles from the ArXiv database for development purposes
+An API that can return articles from the ArXiv database for development purposes. Using Falcon to build a local API and ngrok to expose the local web server. Running the Python script ArXivPully.py to build it all.
+
+Requires Falcon API and ngrok
 
 # How to Use ArXivPully
-Call using url: http://localhost:8000/api/ and query by adding "?<term_1>=<number_of_articles>&<term_2>=<number_of_articles>..."
+Call using url: http://31d2d04a.ngrok.io/api/ and query by adding "?<term_1>=<number_of_articles>&<term_2>=<number_of_articles>..."
 Separate queries by &
 
 
-Example: I want 10 articles about "clustering" from ArXiv, call http://localhost:8000/api/?clustering=10 
+Example: I want 10 articles about "clustering" from ArXiv, call http://31d2d04a.ngrok.io/api/?clustering=10 
 
 The result will be in the form of ["pdf link","Paper Title","Paper Body"] for each article sent in
 
