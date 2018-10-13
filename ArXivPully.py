@@ -3,7 +3,10 @@ from urllib import request
 from bs4 import BeautifulSoup
 
 class ArXivPully:
-    def pullFromArxiv(self,search_query, num_results=10):
+    def cleanText(self,text):
+        return ' '.join(text.split('\n'))
+
+    def pullFromArXiv(self,search_query, num_results=10):
         url = 'https://export.arxiv.org/api/query?search_query=all:'+search_query+'&start=0&max_results='+str(num_results)
         data = request.urlopen(url).read()
         output = []
@@ -13,8 +16,8 @@ class ArXivPully:
         bodies = soup.find_all('summary')
         links = soup.find_all('link', title='pdf')
         for i in range(len(titles)):
-            title = titles[i].text.strip()
-            body = bodies[i].text.strip()
+            title = self.cleanText(titles[i].text.strip())
+            body = self.cleanText(bodies[i].text.strip())
             pdf_link = links[i]['href']
             output.append([pdf_link, title, body])
         return output
@@ -23,7 +26,7 @@ class ArXivPully:
         """Handles GET requests"""
         output = []
         for item in req.params.items():
-            output.append(self.pullFromArxiv(item[0],item[1]))
+            output.append(self.pullFromArXiv(item[0],item[1]))
         resp.media = output
 
 api = falcon.API()
