@@ -8,6 +8,10 @@ class ArXivPully:
         return ' '.join(text.split('\n'))
 
     def pullFromArXiv(self,search_query, num_results=10):
+        # Fix Input if it has spaces in it
+        split_query = search_query.split(' ')
+        if(len(split_query) > 1):
+            search_query = '%20'.join(split_query)
         url = 'https://export.arxiv.org/api/query?search_query=all:'+search_query+'&start=0&max_results='+str(num_results)
         data = request.urlopen(url).read()
         output = []
