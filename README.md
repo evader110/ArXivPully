@@ -1,7 +1,5 @@
 # ArXivPully
-An API that can return articles from the ArXiv database for development purposes. Using Falcon to build a local API and ngrok to expose the local web server. Running the Python script ArXivPully.py to build it all.
-
-Requires Falcon API
+An API that can return articles from the ArXiv database for development purposes. Using Falcon to build a local API and is hosted though a virtual machine from Google Cloud Platform. Running the Python script ArXivPully.py to build it all. Uses gunicorn.
 
 # How to Use ArXivPully
 Call using url: http://api.arxivpully.us/api/query and query by adding "?<term_1>=<number_of_articles>&<term_2>=<number_of_articles>..."
