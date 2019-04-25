@@ -1,41 +1,30 @@
 from falcon import API
-from urllib import request
+import requests
 from bs4 import BeautifulSoup
+import json
 
 class ArXivPully:
-    # Removes rogue newline characters from the title and abstract
-    def cleanText(self,text):
-        return ' '.join(text.split('\n'))
-
-    def pullFromArXiv(self,search_query, num_results=10):
-        # Fix Input if it has spaces in it
-        split_query = search_query.split(' ')
-        if(len(split_query) > 1):
-            search_query = '%20'.join(split_query)
-        url = 'https://export.arxiv.org/api/query?search_query=all:'+search_query+'&start=0&max_results='+str(num_results)
-        data = request.urlopen(url).read()
-        output = []
-        soup = BeautifulSoup(data, 'html.parser')
-        titles = soup.find_all('title')
-
-        # ArXiv populates the first title value as the search query
-        titles.pop(0)
-
+    def pull_from_arxiv(self,search_query, num_results=10):
+        url = 'https://export.arxiv.org/api/query'
+        params = {'search_query': f'all:{search_query}',
+                  'start': 0,
+                  'max_results': num_results} 
+        data = requests.get(url,params=params).text
+        soup = BeautifulSoup(data, 'lxml')
+        # ArXiv populates the the first title value as the search query 
+        titles = soup.find_all('title')[1:]
         bodies = soup.find_all('summary')
         links = soup.find_all('link', title='pdf')
-        for i in range(len(titles)):
-            title = self.cleanText(titles[i].text.strip())
-            body = self.cleanText(bodies[i].text.strip())
-            pdf_link = links[i]['href']
-            output.append([pdf_link, title, body])
-        return output
+        for title, body, link in zip(titles, bodies, links):
+            yield {'link': link['href'],
+                'title': title.text.strip().replace('\n',' '),
+                'body': title.text.strip().replace('\n',' ')}
+               
 
     def on_get(self, req, resp):
         """Handles GET requests"""
-        output = []
-        for item in req.params.items():
-            output.append(self.pullFromArXiv(item[0],item[1]))
-        resp.media = output
+        # json.dumps([list(self.pull_from_arxiv(search_query,num_results) for search_query, num_results in req.params.items())])
+        resp.media = json.dumps({search_query : list(self.pull_from_arxiv(search_query, num_results)) for search_query, num_results in req.params.items()})
 
 api = API()
 api.add_route('/api/query', ArXivPully())
