@@ -3,9 +3,22 @@ An API that can return articles from the ArXiv database for development purposes
 
 # How to Use ArXivPully
 Call using url: http://api.arxivpully.us/api/query and query by adding "?<term_1>=<number_of_articles>&<term_2>=<number_of_articles>..."
-Separate queries by &
+Separate search queries by &
 
 
 Example: I want 10 articles about "clustering" from ArXiv, call http://api.arxivpully.us/api/query?clustering=10 
 
-The result will be in the form of ["pdf link","Paper Title","Paper Body"] for each article sent in
+The result will be in JSON dump. 
+```
+{
+  search_term : [
+    {
+      link : 'articlelink.pdf',
+      title : 'articletitle',
+      body : 'articlebody'
+    },
+    ...
+  ],
+  ...
+}
+```
