@@ -1,0 +1,5 @@
+waitress
+json
+requests
+bs4
+falcon
