@@ -1,7 +1,9 @@
-from falcon import API
+# ArXivPully.py file
+
+import json
 import requests
 from bs4 import BeautifulSoup
-import json
+from falcon import API
 
 class ArXivPully:
     def pull_from_arxiv(self,search_query, num_results=10):

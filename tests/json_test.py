@@ -1,26 +1,32 @@
-import requests
 import json
+import unittest
+import requests
 
-def test_json_output(search_term_one, search_term_two, num_articles_one, num_articles_two):
-    # Testing Server was run on Gunicorn on localhost with port 8000
-    url = f'http://localhost:8000/api/query?{search_term_one}={num_articles_one}&{search_term_two}={num_articles_two}'
+class JsonGetMethods(unittest.TestCase):
+    def setUp(self):
+        self.search_term_one = 'clustering'
+        self.search_term_two = 'artificial intelligence'
+        self.num_articles_one = 10
+        self.num_articles_two = 5
+        url = f'http://localhost:8000/api/query?{self.search_term_one}={self.num_articles_one}&{self.search_term_two}={self.num_articles_two}'
+        self.data = json.loads(requests.get(url).json())
 
-    data = json.loads(requests.get(url).json())
+    def test_json_loads(self):
+        self.assertTrue(self.search_term_one in self.data, f'No {self.search_term_one} articles given')
+        self.assertTrue(self.search_term_two in self.data, f'No {self.search_term_two} articles given')
+        
 
-    # Check for all available properties in json output
-    assert 'title' in data[search_term_one][0], 'No titles were given'
-    assert 'body' in data[search_term_one][0], 'No bodies were given'
-    assert 'link' in data[search_term_one][0], 'No links were given'
-    assert 'title' in data[search_term_two][0], 'No titles were given'
-    assert 'body' in data[search_term_two][0], 'No bodies were given'
-    assert 'link' in data[search_term_two][0], 'No links were given'
-    # Check that Search term is a key in the output
-    assert search_term_one in data, f'No {search_term_one} articles given'
-    assert search_term_two in data, f'No {search_term_two} articles given'
-    # Check that the number of articles you recieved are correect
-    assert len(data[search_term_one]) == num_articles_one, f'We did not get {num_articles_one} articles, instead we got {len(data[search_term_one])}'
-    assert len(data[search_term_two]) == num_articles_two, f'We did not get {num_articles_two} articles, instead we got {len(data[search_term_two])}'
-    # All tests passed, return success
-    return True
+    def test_article_body_is_full(self):
+        self.assertTrue('title' in self.data[self.search_term_one][0], 'No titles were given')
+        self.assertTrue('body' in self.data[self.search_term_one][0], 'No bodies were given')
+        self.assertTrue('link' in self.data[self.search_term_one][0], 'No links were given')
+        self.assertTrue('title' in self.data[self.search_term_two][0], 'No titles were given')
+        self.assertTrue('body' in self.data[self.search_term_two][0], 'No bodies were given')
+        self.assertTrue('link' in self.data[self.search_term_two][0], 'No links were given')
 
-assert test_json_output('clustering', 'artifiicial intelligence', 10, 5), 'json output is no longer correct'
+    def test_correct_number_of_articles(self):
+        self.assertTrue(len(self.data[self.search_term_one]) == self.num_articles_one, f'We did not get {self.num_articles_one} articles, instead we got {len(self.data[self.search_term_one])}')
+        self.assertTrue(len(self.data[self.search_term_two]) == self.num_articles_two, f'We did not get {self.num_articles_two} articles, instead we got {len(self.data[self.search_term_two])}')
+
+if __name__=='__main__':
+    unittest.main()
