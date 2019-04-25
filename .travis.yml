@@ -1,4 +1,6 @@
 language: python
+python: 3.6
 script:
   - python ArXivPully.py
-  - python /tests/json_test.py
+  - waitress-serve --port=8000 --channel_timeout=20 ArXivPully:api 
+  - python tests/json_test.py
