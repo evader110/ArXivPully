@@ -1,1 +1,4 @@
 language: python
+script:
+  - ArXivPully
+  - /tests/json_test
