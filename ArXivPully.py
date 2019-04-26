@@ -25,7 +25,6 @@ class ArXivPully:
 
     def on_get(self, req, resp):
         """Handles GET requests"""
-        # json.dumps([list(self.pull_from_arxiv(search_query,num_results) for search_query, num_results in req.params.items())])
         resp.media = json.dumps({search_query : list(self.pull_from_arxiv(search_query, num_results)) for search_query, num_results in req.params.items()})
 
 api = API()
