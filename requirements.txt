@@ -1,0 +1,4 @@
+waitress
+requests
+bs4
+falcon
